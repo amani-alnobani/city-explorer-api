@@ -2,47 +2,48 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const axios = require('axios');
 app.use(cors());
 
+// a server endpoint 
+require('dotenv').config();
 
-const weather = require('./data/weather.json')
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+
+const weather = require('./data/weather.json');
 app.get('/',
-    function (req, res) {
-        res.send('Hello World');
-    });
+  function (req, res) { 
+    res.send('Hello World');
+  });
 class Forecast {
-    constructor(date, description) {
-        this.date = date;
-        this.description = description;
-    }
+  constructor(date, description) {
+    this.date = date;
+    this.description = description;
+  }
 
 }
 
-app.get('/weather', (req, res) => {
-    // console.log(request);
+app.get('/weather', async (req, res) => {
 
-    let city_name = req.query.city_name;
-    let lat = req.query.lat;
-    let lon = req.query.lon;
+  let lat = req.query.lat;
+  let lon = req.query.lon;
 
-    //    res.send(weather[0].lat);
+  const weatherBitUrl = 'https://api.weatherbit.io/v2.0/forecast/daily';
+  try{
+    const weatherBitResponse = await axios.get(`${weatherBitUrl}?lat=${lat}&lon=${lon}&key=${WEATHER_API_KEY}`); 
+    // console.log(weatherBitResponse);
+    // console.log(weatherBitResponse.data);
+    const returnArray = weatherBitResponse.data.data.map((item) => {
 
-    //  && item.lat === lat && item.lon === lon
-
-    const returnArray = weather.find((item) => {
-        return (item.city_name.toLowerCase() === city_name.toLowerCase())
+      return new Forecast(item.datetime, item.weather.description);
     });
-    if (returnArray) {
-        let newArr = returnArray.data.map((item) => {
-            return new Forecast(item.datetime, item.weather.description);
-        });
-        res.json(newArr);
-    }
-    else {
-        res.json('data not found');
-    }
+    res.json(returnArray);
+  }
 
-
+  catch (error) {
+    res.json(error);
+  }
 });
-
-app.listen(3004)
+// console.log("hello");
+app.listen(3001,()=>{
+});
