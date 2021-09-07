@@ -5,14 +5,13 @@ const cors = require('cors');
 const axios = require('axios');
 app.use(cors());
 
-// a server endpoint 
 require('dotenv').config();
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
 const weather = require('./data/weather.json');
 app.get('/',
-  function (req, res) { 
+  function (req, res) {
     res.send('Hello World');
   });
 class Forecast {
@@ -30,9 +29,7 @@ app.get('/weather', async (req, res) => {
 
   const weatherBitUrl = 'https://api.weatherbit.io/v2.0/forecast/daily';
   try{
-    const weatherBitResponse = await axios.get(`${weatherBitUrl}?lat=${lat}&lon=${lon}&key=${WEATHER_API_KEY}`); 
-    // console.log(weatherBitResponse);
-    // console.log(weatherBitResponse.data);
+    const weatherBitResponse = await axios.get(`${weatherBitUrl}?lat=${lat}&lon=${lon}&key=${WEATHER_API_KEY}`);
     const returnArray = weatherBitResponse.data.data.map((item) => {
 
       return new Forecast(item.datetime, item.weather.description);
@@ -44,6 +41,5 @@ app.get('/weather', async (req, res) => {
     res.json(error);
   }
 });
-// console.log("hello");
 app.listen(3001,()=>{
 });
