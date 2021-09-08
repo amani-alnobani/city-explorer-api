@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
-const weather = require('./data/weather.json');
+// const weather = require('./data/weather.json');
 app.get('/',
   function (req, res) {
     res.send('Hello World');
