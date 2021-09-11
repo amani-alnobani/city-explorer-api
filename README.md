@@ -17,11 +17,10 @@ Actual time needed to complete: 4 hours
 **Author**: amani alnobani
 **Version**: 1.0.0 
 ## Overview
-1. As a user of City Explorer, I want to see weather info for the city I searched, so that I know how to pack for an upcoming trip.
-2. As a user of City Explorer, I want to see info about movies related to the city I searched, so that I can learn more about the destination.
+1. Set up your server repository.
+2.  As a user of City Explorer, I want to see weather info for the city I searched, so that I know how to pack for an upcoming trip.
+3.  As a user, I want clear messages if something goes wrong so I know if I need to make any changes or try again in a different manner.
 
-## Getting Started
-DOWNLOUDE THE LIBRARY
 
 ## Architecture
 JS LANGOUGE,REACT LIBRART
