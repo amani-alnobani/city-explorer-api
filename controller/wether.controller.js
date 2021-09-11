@@ -1,20 +1,34 @@
 require('dotenv').config();
 const axios = require('axios');
-const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const WETHER_API_KEY = process.env.WETHER_API_KEY;
 const Forecast = require('../models/wether.model');
+const Cache = require('../helper/cache.helper');
+
+let cacheObject = new Cache();
 
 const wetherfun = async (request, res) => {
-    const city_name = request.query.city;
-    const weatherUrl = `https://api.weatherbit.io/v2.0/forecast/daily?`;
-    const weatherUrlUsed = await axios.get(`${weatherUrl}city=${city_name}&key=${WEATHER_API_KEY}`);
+    // const city_name = request.query.city;
+    const { lon, lat } = request.query;
 
-    if (city_name) {
-        let newArray = weatherUrlUsed.data.data.map(item => {
-            return new Forecast(item.datetime, item.weather.description);
-        });
-        res.json(newArray);
+    const foundData = cacheObject.forecast.find(location => location.lat === lat && location.lon === lon);
+    if (foundData) {
+        res.json(foundData.data);
     } else {
-        res.json('no data ');
+        const weatherUrl = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${WETHER_API_KEY}`;
+        if (weatherUrl) {
+            const weatherUrlUsed = await axios.get(`${weatherUrl}`);
+            let newArray = weatherUrlUsed.data.data.map(item => {
+                return new Forecast(item.datetime, item.weather.description);
+            });
+            cacheObject.forecast.push({
+                'lat':lat,
+                'lon':lon,
+                'data':newArray
+            })
+            res.json(newArray);
+        } else {
+            res.json('no data ');
+        }
     }
 };
 
