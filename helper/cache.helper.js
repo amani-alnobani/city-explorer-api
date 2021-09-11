@@ -3,6 +3,8 @@
 class Cache {
     constructor() {
         this.forecast = []
+        this.movies=[]
+
     }
 }
 
